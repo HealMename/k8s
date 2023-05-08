@@ -70,9 +70,9 @@ def node_resource(core_api, n_name=None):
         allocatable_cpu = node.status.allocatable['cpu']
         allocatable_memory = node.status.allocatable['memory']
         allocatable_storage = node.status.allocatable['ephemeral-storage']
-        node_resouces[node_name]["allocatable_cpu"] = int(allocatable_cpu)
+        node_resouces[node_name]["allocatable_cpu"] = int(allocatable_cpu[:-1])
         node_resouces[node_name]["allocatable_memory"] = memoryUnitToG(allocatable_memory)
-        node_resouces[node_name]["allocatable_ephemeral_storage"] = round(int(allocatable_storage) / 1024 / 1024 / 1024,2)
+        node_resouces[node_name]["allocatable_ephemeral_storage"] = round(int(allocatable_storage[:-2]) / 1024 / 1024 / 1024,2)
 
         # 总容量
         capacity_cpu = node.status.capacity['cpu']

@@ -8,7 +8,7 @@ from kubernetes import client,config
 import os,hashlib,random
 from django.shortcuts import redirect # 重定向
 
-HOST = "http://182.42.126.254:30880"
+HOST = "https://182.42.126.254:6443"
 
 
 def auth_check(auth_type,str):
