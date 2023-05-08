@@ -8,12 +8,15 @@ from kubernetes import client,config
 import os,hashlib,random
 from django.shortcuts import redirect # 重定向
 
+HOST = "http://182.42.126.254:30880"
+
+
 def auth_check(auth_type,str):
     print(auth_type)
     if auth_type == "token":
         token = str
         configuration = client.Configuration()
-        configuration.host = "https://192.168.0.181:6443"  # APISERVER地址
+        configuration.host = HOST  # APISERVER地址
         configuration.ssl_ca_cert = os.path.join("kubeconfig", "ca.crt") # CA证书
         configuration.verify_ssl = True  # 启用证书验证
         configuration.api_key = {"authorization": "Bearer " + token}  # 指定Token字符串
@@ -56,7 +59,7 @@ def load_auth_config(auth_type,str):
     if auth_type == "token":
         token = str
         configuration = client.Configuration()
-        configuration.host = "https://192.168.0.181:6443"  # APISERVER地址
+        configuration.host = HOST  # APISERVER地址
         configuration.ssl_ca_cert = r"%s" %(os.path.join('kubeconfig', "ca.crt")) # CA证书
         configuration.verify_ssl = True  # 启用证书验证
         configuration.api_key = {"authorization": "Bearer " + token}  # 指定Token字符串
