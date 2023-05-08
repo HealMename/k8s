@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'devops.wsgi.application'
 DATABASES = {
 	'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'k8s',
+        'NAME': 'webk8s',
         'USER': 'root',
         'PASSWORD': 'root1234',
         'HOST': '182.42.67.77',
