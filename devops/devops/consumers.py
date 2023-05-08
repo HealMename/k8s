@@ -1,8 +1,9 @@
 from channels.generic.websocket import WebsocketConsumer
 from kubernetes.stream import stream
-from threading import Thread    # 多线程
+from threading import Thread  # 多线程
 from kubernetes import client
 from devops import k8s_tools
+
 
 # 多线程
 class K8sStreamThread(Thread):
@@ -23,6 +24,7 @@ class K8sStreamThread(Thread):
                 self.websocket.send(stderr)
         else:
             self.websocket.close()
+
 
 # 继承WebsocketConsumer 类，并修改下面几个方法，主要连接到容器
 class StreamConsumer(WebsocketConsumer):
@@ -49,13 +51,13 @@ class StreamConsumer(WebsocketConsumer):
             '|| exec /bin/sh']
         try:
             self.conn_stream = stream(core_api.connect_get_namespaced_pod_exec,
-                                 name=self.pod_name,
-                                 namespace=self.namespace,
-                                 command=exec_command,
-                                 container=self.container,
-                                 stderr=True, stdin=True,
-                                 stdout=True, tty=True,
-                                 _preload_content=False)
+                                      name=self.pod_name,
+                                      namespace=self.namespace,
+                                      command=exec_command,
+                                      container=self.container,
+                                      stderr=True, stdin=True,
+                                      stdout=True, tty=True,
+                                      _preload_content=False)
             kube_stream = K8sStreamThread(self, self.conn_stream)
             kube_stream.start()
         except Exception as e:

@@ -29,7 +29,7 @@
 </head>
 
 <body>
-  <div class="terminal-window">
+  <div class="terminal-window" style="display: none;">
       <div class="containers">
           Pod名称：{{ connect.pod_name }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           容器：
@@ -47,7 +47,7 @@
 
 <script>
 
-    var term = new Terminal({cursorBlink: true,rows:70});
+    var term = new Terminal({cursorBlink: true,rows:26});
     term.open(document.getElementById('terminal'));
 
     var auth_type = '{{ connect.auth_type }}';

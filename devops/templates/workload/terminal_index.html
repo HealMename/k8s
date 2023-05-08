@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>容器终端</title>
+    <link rel="stylesheet" href="/static/layui-v2.7.6/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/layui-v2.7.6/layui/css/modules/code.css">
+    <style>
+        .layui-bg-green {
+            background-image: url("https://tbkt.cn/site_media/images/kxds.png");
+            /* 背景图垂直、水平均居中 */
+            background-position: center center;
+            /* 背景图不平铺 */
+            background-repeat: no-repeat;
+            /* 让背景图基于容器大小伸缩 */
+            background-size: cover;
+        }
+
+        .layui-nav-item {
+            float: right;
+            font-size: 25px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 500px;
+        }
+        .layui-card{
+            scrollbar-width: none; /* firefox */
+            -ms-overflow-style: none; /* IE 10+ */
+        }
+        .layui-card::-webkit-scrollbar {
+            display: none; /* Chrome Safari */
+        }
+
+        .layui-row{
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<ul class="layui-nav layui-bg-green" style="height: 65px;width: 100%">
+
+    <li class="layui-nav-item">10:59:59</li>
+</ul>
+<div class="layui-bg-gray" style="padding: 10px; padding-bottom: 0;">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md4">
+            <div class="layui-card" style="height: 569px;overflow: scroll;">
+                <div class="layui-card-header"><b>题目详情</b></div>
+                <div class="layui-card-body">
+                    <p><b>题目说明:</b></p>
+                    <p>Celery是一个基于python开发的分布式任务队列，而做python
+                        WEB开发最为流行的框架莫属Django，但是Django的请求处理过程都是同步的无法实现异步任务，
+                        若要实现异步任务处理需要通过其他方式（前端的一般解决方案是ajax操作），
+                        而后台Celery就是不错的选择。倘若一个用户在执行某些操作需要等待很久才返回，这大大降低了网站的吞吐量。</p>
+                    <p><b>环境说明:</b></p>
+                    <p>Celery是一个基于python开发的分布式任务队列，而做python WEB开发最为流行的框架莫属Django，
+                        但是Django的请求处理过程都是同步的无法实现异步任务，
+                        若要实现异步任务处理需要通过其他方式（前端的一般解决方案是ajax操作），
+                        而后台Celery就是不错的选择。倘若一个用户在执行某些操作需要等待很久才返回，这大大降低了网站的吞吐量。</p>
+                    <p><b>操作提示:</b></p>
+                    <p>
+                        1. 新建立项目celery_demo,目录结构（每个app下多了个tasks文件，
+<pre class="layui-code" lay-title="JavaScript" lay-skin="notepad">
+testcelery_demo
+├── app01
+│   ├── __init__.py
+│   ├── apps.py
+│   ├── migrations
+│   │   └── __init__.py
+│   ├── models.py
+│   ├── tasks.py
+│   └── views.py
+├── manage.py
+├── celery_demo
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+└── templates</pre>
+                    </p>
+                    <p>2. 用于定义任务 在项目目录celery_demo/celery_demo/目录下新建celery.py:</p>
+                    <pre class="layui-code" lay-title="JavaScript" lay-skin="notepad">#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+# Author:wd
+from __future__ import absolute_import, unicode_literals
+import os
+from celery import Celery
+
+# 设置django环境
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'celery_demo.settings')
+app = Celery('celery_demo')
+#  使用CELERY_ 作为前缀，在settings中写配置
+app.config_from_object('django.conf:settings', namespace='CELERY')
+# 发现任务文件每个app下的task.py
+app.autodiscover_tasks()</pre>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md8">
+            <div class="layui-card">
+                <div class="layui-card-header"><b>操作终端</b></div>
+                <div class="layui-card-body">
+                    <iframe src="/workload/terminal_web/?namespace=m8-mysql&pod_name=mysql-deploy-0&containers=container-ckg4hh"
+                            frameborder="0" onload=""></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="layui-bg-gray" style="padding: 10px;">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md4">
+      <div class="layui-panel">
+        <div style="padding: 50px 30px;text-align: center;">你以为你感动了地球，其实只是温暖了自己。</div>
+      </div>
+    </div>
+    <div class="layui-col-md8">
+      <div class="layui-panel">
+        <div style="padding: 40px 30px;">
+            <button type="button" class="layui-btn layui-btn-normal">上一题</button>
+            <button type="button" class="layui-btn layui-btn-normal">下一题</button>
+            <button type="button" class="layui-btn layui-btn-danger">退出</button>
+            <button type="button" class="layui-btn layui-btn-normal">提交</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+
+<script>
+
+</script>
+
+</html>

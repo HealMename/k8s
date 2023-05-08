@@ -24,7 +24,6 @@ class StreamLogConsumer(WebsocketConsumer):
         self.namespace = self.scope["url_route"]["kwargs"]["namespace"]
         self.pod_name = self.scope["url_route"]["kwargs"]["pod_name"]
         self.container = self.scope["url_route"]["kwargs"]["container"]
-
         k8s_auth = self.scope["query_string"].decode()  # b'auth_type=kubeconfig&token=7402e616e80cc5d9debe66f31b7a8ed6'
         auth_type = k8s_auth.split('&')[0].split('=')[1]
         token = k8s_auth.split('&')[1].split('=')[1]

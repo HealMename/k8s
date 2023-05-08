@@ -874,29 +874,59 @@ def pods_api(request):
 
 # pods_logs 接口
 from django.views.decorators.clickjacking import xframe_options_exempt
+
+
 @xframe_options_exempt
 @k8s_tools.self_login_required
 def pods_log(request):
     namespace = request.GET.get("namespace")
     pod_name = request.GET.get("pod_name")
     containers = request.GET.get("containers").split(',')  # 返回 nginx1,nginx2，转成一个列表方便前端处理
-    auth_type = request.session.get('auth_type')  # 认证类型和token，用于传递到websocket，websocket根据sessionid获取token，让websocket处理连接k8s认证用
+    auth_type = request.session.get(
+        'auth_type')  # 认证类型和token，用于传递到websocket，websocket根据sessionid获取token，让websocket处理连接k8s认证用
     token = request.session.get('token')
-    connect = {'namespace': namespace, 'pod_name': pod_name, 'containers': containers, 'auth_type': auth_type,'token': token}
+    connect = {'namespace': namespace, 'pod_name': pod_name, 'containers': containers, 'auth_type': auth_type,
+               'token': token}
     return render(request, 'workload/pods_log.html', {'connect': connect})
 
 
 # pods_terminal 终端接口
 from django.views.decorators.clickjacking import xframe_options_exempt
-@xframe_options_exempt         # 这个是用于跨域请求
+
+
+@xframe_options_exempt  # 这个是用于跨域请求
 @k8s_tools.self_login_required
 def terminal(request):
     namespace = request.GET.get("namespace")
     pod_name = request.GET.get("pod_name")
     containers = request.GET.get("containers").split(',')  # 返回 nginx1,nginx2，转成一个列表方便前端处理
-    auth_type = request.session.get('auth_type')  # 认证类型和token，用于传递到websocket，websocket根据sessionid获取token，让websocket处理连接k8s认证用
+    auth_type = request.session.get(
+        'auth_type')  # 认证类型和token，用于传递到websocket，websocket根据sessionid获取token，让websocket处理连接k8s认证用
     token = request.session.get('token')
-
-
-    connect = {'namespace': namespace, 'pod_name': pod_name, 'containers': containers, 'auth_type': auth_type,'token': token}
+    connect = {'namespace': namespace, 'pod_name': pod_name, 'containers': containers, 'auth_type': auth_type,
+               'token': token}
     return render(request, 'workload/terminal.html', {'connect': connect})
+
+
+TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6IlJIbF9QUnlBTUJISkhHbzg4Wks0a3pacENBM0pZOTREVW9kc3A3d1cxak0ifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkYXNoYm9hcmQtYWRtaW4tdG9rZW4teHRycnIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGFzaGJvYXJkLWFkbWluIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiNDg2NjczYjktNTBkMS00NjY2LTliYWMtN2ZlNjYxZGYxNDAxIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmRhc2hib2FyZC1hZG1pbiJ9.ik8OqClmZNuMUTaqX701NG2Ezsv4fB1MecYk8PsWwMYsA-r--iWVpDtuN4RnFYNvt4uBrtoIfMC3oIZfYKF1eEENQEsknuf2-GHMDrZ1zdnFDmgU7z2IFPEvtJVGankF6sjgmQGp8ymg8a72o236XzzgV2kaSNHGc6QQzuXO7_IM9UIjmrXA6lwiBv3pR_Aq3s2INxM7boTYuYUGf30anlHMQt3Wruu1OhPS9s3Vf6nOJEvlu7pGKsFwIS1xT-0rc70DwcEhl5uF36BpkW76sgt3dqVoP6N-JzxavNKZW6KF_g40Gurr8qNvJtB6KE2qerzz8PS72ct5ZzSdVWNCDg"
+
+
+@xframe_options_exempt  # 这个是用于跨域请求
+@k8s_tools.self_login_required
+def terminal_web(request):
+    """打开终端"""
+    namespace = request.GET.get("namespace")
+    pod_name = request.GET.get("pod_name")
+    containers = request.GET.get("containers").split(',')  # 返回 nginx1,nginx2，转成一个列表方便前端处理
+    auth_type = request.session.get(
+        'auth_type')  # 认证类型和token，用于传递到websocket，websocket根据sessionid获取token，让websocket处理连接k8s认证用
+    connect = {'namespace': namespace, 'pod_name': pod_name, 'containers': containers, 'auth_type': auth_type,
+               'token': TOKEN}
+    return render(request, 'workload/terminal_web.html', {'connect': connect})
+
+
+@xframe_options_exempt  # 这个是用于跨域请求
+@k8s_tools.self_login_required
+def terminal_index(request):
+    """做题页"""
+    return render(request, 'workload/terminal_index.html')

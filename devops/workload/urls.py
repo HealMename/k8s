@@ -18,4 +18,6 @@ urlpatterns = [
     re_path('^replicaset_api/$', views.replicaset_api, name="replicaset_api"),    # 用于deployments详情页查询数据
     re_path('^pods_log/$', views.pods_log, name="pods_log"),    # 用于pods的日志查看
     re_path('^terminal/$', views.terminal, name="terminal"),    # 用于pod的容器终端
+    re_path('^terminal_web/$', views.terminal_web, name="terminal_web"),  # 用于web_pod的容器终端
+    re_path('^terminal_index/$', views.terminal_index, name="terminal_index"),  # 做题首页
 ]
