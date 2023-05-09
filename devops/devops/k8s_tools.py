@@ -8,6 +8,9 @@ from kubernetes import client,config
 import os,hashlib,random
 from django.shortcuts import redirect # 重定向
 
+from devops.settings import WEB_URL
+from libs.utils import ajax, auth_token
+
 HOST = "https://182.42.126.254:6443"
 
 
@@ -40,7 +43,6 @@ def auth_check(auth_type,str):
         except Exception as e:
             print(e)
             return False
-
 
 
 # 登陆装饰器，判断session是否存在，不存在跳转到登陆页面

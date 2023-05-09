@@ -4,6 +4,7 @@ from threading import Thread  # 多线程
 from kubernetes import client
 from devops import k8s_tools
 
+from devops.settings import TOKEN
 
 # 多线程
 class K8sStreamThread(Thread):
@@ -37,9 +38,9 @@ class StreamConsumer(WebsocketConsumer):
 
         k8s_auth = self.scope["query_string"].decode()  # b'auth_type=kubeconfig&token=7402e616e80cc5d9debe66f31b7a8ed6'
         auth_type = k8s_auth.split('&')[0].split('=')[1]
-        token = k8s_auth.split('&')[1].split('=')[1]
+        # token = k8s_auth.split('&')[1].split('=')[1]
 
-        k8s_tools.load_auth_config(auth_type, token)
+        k8s_tools.load_auth_config(auth_type, TOKEN)
         core_api = client.CoreV1Api()
 
         exec_command = [

@@ -51,19 +51,17 @@
     term.open(document.getElementById('terminal'));
 
     var auth_type = '{{ connect.auth_type }}';
-    var token = '{{ connect.token }}';
     var namespace = '{{ connect.namespace }}';
     var pod_name = '{{ connect.pod_name }}';
     var container = document.getElementById('containerSelect').value;
     console.log(auth_type)
-    {#console.log(token)#}
     console.log(namespace)
     console.log(pod_name)
     console.log(container)
 
 
      // 打开一个 websocket，django也会把sessionid传过去
-    var ws = new WebSocket('ws://' + window.location.host + '/workload/terminal/' + namespace + '/' + pod_name + '/' + container + '/?auth_type=' + auth_type + '&token=' + token);
+    var ws = new WebSocket('ws://' + window.location.host + '/workload/terminal/' + namespace + '/' + pod_name + '/' + container + '/?auth_type=' + auth_type);
     var send_data = ""
     //打开websocket连接，并打开终端
     var now_send = ""
@@ -72,8 +70,10 @@
         ws.send("mysql  -uroot -proot1234 \r")
         term.on('data', function (data) {
             ws.send(data);
+            parent.set_exit_count()
             if (data === '\r') {
                 console.log("输入：", send_data)
+                parent.push_content({"msg": send_data, type: 1});
                 send_data = ''
             }else{
                 send_data += data
@@ -88,6 +88,7 @@
         ws.onmessage = function (event) {
             if (now_send !== event.data && event.data.trim()){
                 console.log('输出：', event.data)
+                parent.push_content({"msg": event.data, type: 2});
             }
           term.write(event.data);
         };
@@ -96,6 +97,9 @@
           term.write('\n\r\x1B[1;3;31m连接关闭！\x1B[0m');
         };
     };
+    function close_ws() {
+        ws.close()
+    }
 
 </script>
 

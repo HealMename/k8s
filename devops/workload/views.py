@@ -1,11 +1,17 @@
+import json
+import time
+
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, QueryDict
 from kubernetes import client, config
 import os, hashlib, random
 from devops import k8s_tools  # 导入k8s登陆封装
 
-
 # deployments 页面展示
+from devops.settings import TOKEN, WEB_URL
+from libs.utils import db, Struct, ajax
+
+
 @k8s_tools.self_login_required
 def deployments(request):
     return render(request, "workload/deployments.html")
@@ -908,25 +914,47 @@ def terminal(request):
     return render(request, 'workload/terminal.html', {'connect': connect})
 
 
-TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6IlJIbF9QUnlBTUJISkhHbzg4Wks0a3pacENBM0pZOTREVW9kc3A3d1cxak0ifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkYXNoYm9hcmQtYWRtaW4tdG9rZW4teHRycnIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGFzaGJvYXJkLWFkbWluIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiNDg2NjczYjktNTBkMS00NjY2LTliYWMtN2ZlNjYxZGYxNDAxIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmRhc2hib2FyZC1hZG1pbiJ9.ik8OqClmZNuMUTaqX701NG2Ezsv4fB1MecYk8PsWwMYsA-r--iWVpDtuN4RnFYNvt4uBrtoIfMC3oIZfYKF1eEENQEsknuf2-GHMDrZ1zdnFDmgU7z2IFPEvtJVGankF6sjgmQGp8ymg8a72o236XzzgV2kaSNHGc6QQzuXO7_IM9UIjmrXA6lwiBv3pR_Aq3s2INxM7boTYuYUGf30anlHMQt3Wruu1OhPS9s3Vf6nOJEvlu7pGKsFwIS1xT-0rc70DwcEhl5uF36BpkW76sgt3dqVoP6N-JzxavNKZW6KF_g40Gurr8qNvJtB6KE2qerzz8PS72ct5ZzSdVWNCDg"
-
-
 @xframe_options_exempt  # 这个是用于跨域请求
-@k8s_tools.self_login_required
 def terminal_web(request):
     """打开终端"""
     namespace = request.GET.get("namespace")
     pod_name = request.GET.get("pod_name")
     containers = request.GET.get("containers").split(',')  # 返回 nginx1,nginx2，转成一个列表方便前端处理
-    auth_type = request.session.get(
-        'auth_type')  # 认证类型和token，用于传递到websocket，websocket根据sessionid获取token，让websocket处理连接k8s认证用
+    auth_type = "token"  # 认证类型和token，用于传递到websocket，websocket根据sessionid获取token，让websocket处理连接k8s认证用
     connect = {'namespace': namespace, 'pod_name': pod_name, 'containers': containers, 'auth_type': auth_type,
                'token': TOKEN}
     return render(request, 'workload/terminal_web.html', {'connect': connect})
 
 
 @xframe_options_exempt  # 这个是用于跨域请求
-@k8s_tools.self_login_required
 def terminal_index(request):
     """做题页"""
-    return render(request, 'workload/terminal_index.html')
+    message_id = request.QUERY.get('id')  # 做题记录id
+    index = request.QUERY.get('index', 0)  # 题目序号
+    if request.method == 'GET':
+        if not request.user_info:
+            return redirect(WEB_URL)
+        user = request.user_info
+        test = db.web.user_test_det.filter(id=message_id, add_user=user['user_id'], role=user['role']).first()
+        if not test:
+            return redirect(WEB_URL)
+        question_ids = [x['id'] for x in json.loads(test.content)]
+        data = Struct()
+        data.type = test.type
+        data.question_ids = question_ids
+        data.question = db.web.question.get(id=question_ids[int(index)])
+        data.index = index
+        return render(request, 'workload/terminal_index.html', data)
+    else:
+        # 提交
+        qid = request.QUERY.get('qid')
+        content = request.QUERY.get('content')
+        now = int(time.time())
+        det_content = db.web.user_test_det_content.filter(det_id=message_id, question_id=qid).first()  # 历史做题详情
+        if det_content:
+            db.web.user_test_det_content.filter(det_id=message_id, question_id=qid).update(
+                add_time=now, content=content)
+        else:
+            db.web.user_test_det_content.create(det_id=message_id, question_id=qid, content=content, add_time=now)
+        return ajax.ajax_ok(message='提交成功')
+

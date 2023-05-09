@@ -20,8 +20,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '(=056m8uk3y3%1@yt2k^n$785w#6nb1z$wl-&aw6$szdvcxh#4'
-
+SECRET_KEY = '10086'
+SESSION_COOKIE_AGE = 60 * 60 * 24  # token有效期
+DB_WAIT_TIMEOUT = 20  # 单个连接最长维持时间
+DB_POOL_SIZE = 2  # 连接池最大连接数
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -43,15 +45,17 @@ INSTALLED_APPS = [
 ASGI_APPLICATION = 'devops.routing.application'
 
 MIDDLEWARE = [
+    'devops.mymiddle.CoreMiddle',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+WEB_URL = "http://182.42.126.254:8087"
 ROOT_URLCONF = 'devops.urls'
 
 TEMPLATES = [
@@ -76,21 +80,30 @@ WSGI_APPLICATION = 'devops.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
+ENGINE = 'django.db.backends.mysql'
 # devops_orm/settings.py
 DATABASES = {
 	'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': ENGINE,
         'NAME': 'k8s',
         'USER': 'root',
         'PASSWORD': 'root1234',
         'HOST': '182.42.67.77',
         'PORT': '32528',
-	}
+	},
+    'web': {
+        'ENGINE': ENGINE,
+        'NAME': 'django7681v',
+        'USER': 'root',
+        'PASSWORD': 'root1234',
+        'HOST': '182.42.67.77',
+        'PORT': '32528',
+	},
 }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
+TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6IlJIbF9QUnlBTUJISkhHbzg4Wks0a3pacENBM0pZOTREVW9kc3A3d1cxak0ifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkYXNoYm9hcmQtYWRtaW4tdG9rZW4teHRycnIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGFzaGJvYXJkLWFkbWluIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiNDg2NjczYjktNTBkMS00NjY2LTliYWMtN2ZlNjYxZGYxNDAxIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmRhc2hib2FyZC1hZG1pbiJ9.ik8OqClmZNuMUTaqX701NG2Ezsv4fB1MecYk8PsWwMYsA-r--iWVpDtuN4RnFYNvt4uBrtoIfMC3oIZfYKF1eEENQEsknuf2-GHMDrZ1zdnFDmgU7z2IFPEvtJVGankF6sjgmQGp8ymg8a72o236XzzgV2kaSNHGc6QQzuXO7_IM9UIjmrXA6lwiBv3pR_Aq3s2INxM7boTYuYUGf30anlHMQt3Wruu1OhPS9s3Vf6nOJEvlu7pGKsFwIS1xT-0rc70DwcEhl5uF36BpkW76sgt3dqVoP6N-JzxavNKZW6KF_g40Gurr8qNvJtB6KE2qerzz8PS72ct5ZzSdVWNCDg"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
