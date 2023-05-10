@@ -943,6 +943,7 @@ def terminal_index(request):
         data.type = test.type
         data.question_ids = question_ids
         data.question = db.web.question.get(id=question_ids[int(index)])
+        data.question.link_url = json.loads(data.question.link_url)[0]
         data.index = index
         return render(request, 'workload/terminal_index.html', data)
     else:

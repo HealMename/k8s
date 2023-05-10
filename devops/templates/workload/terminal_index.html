@@ -59,7 +59,7 @@
                 <div class="layui-card-header"><b>操作终端</b>
                     <b style="float: right;color: red;">做题剩余时间: <span class="now_time">00:00:00</span></b></div>
                 <div class="layui-card-body">
-                    <iframe src="/workload/terminal_web/?namespace=m8-mysql&pod_name=mysql-deploy-0&containers=container-ckg4hh"
+                    <iframe src="{{ question.link_url }}"
                             frameborder="0" name="terminal"></iframe>
                 </div>
             </div>
@@ -99,7 +99,8 @@
     if (token){
         localStorage.setItem('Token', token);
     }
-    var do_time = {{ question.do_time }}
+    var status = 0;
+    var do_time = {{ question.do_time }};
     var inter = null;
     var index = {{ index }};
     var qid = {{ question.id }};
@@ -128,6 +129,9 @@
         content.push(text)
     }
     function save_content(next_url) {
+        if (status === '1' && !next_url){
+            return msg_fail("连接已关闭！")
+        }
         // 保存做题记录
         let url = window.location.href
         let post_data = {
@@ -137,6 +141,8 @@
         $.post(url, post_data, function (res) {
             if (res.response === 'ok'){
                 window.frames["terminal"].close_ws();
+                destroyed()
+                status = '1'
                 msg_ok("提交成功，连接已关闭", function () {
                     if (next_url){
                         location.href = next_url
@@ -146,6 +152,9 @@
         })
     }
     function go_back() {
+        if (status === '1'){
+            return msg_fail("连接已关闭！")
+        }
         // 退出
         layer.open({
           title: '确认退出'
