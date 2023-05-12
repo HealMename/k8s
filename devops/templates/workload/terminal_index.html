@@ -117,6 +117,11 @@
     var message_id = {{ request.GET.id }};
     var max_length = {{ question_ids|length }};
     var content = []; // 做题详情
+    var sid = {{ question.sid }};
+    // 发送命令 暂时不用
+    // if (sid === 2){
+    //    window.frames["terminal"].send_str();
+    // }
 
     function next_q(type) {
             // 1上一题 2下一题
