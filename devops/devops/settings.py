@@ -88,16 +88,16 @@ DATABASES = {
         'NAME': 'k8s',
         'USER': 'root',
         'PASSWORD': 'root1234',
-        'HOST': '182.42.67.77',
-        'PORT': '32528',
+        'HOST': '182.42.126.254',
+        'PORT': '3306',
 	},
     'web': {
         'ENGINE': ENGINE,
-        'NAME': 'django7681v',
+        'NAME': 'recruit',
         'USER': 'root',
         'PASSWORD': 'root1234',
-        'HOST': '182.42.67.77',
-        'PORT': '32528',
+        'HOST': '182.42.126.254',
+        'PORT': '3306',
 	},
 }
 
