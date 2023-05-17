@@ -89,13 +89,13 @@ def decode_plain_password(data):
     return base64.b64decode(data)
 
 
-def create_checkcode(account_id, user_id, expire_time):
+def create_checkcode(user_id, expire_time):
     """
     快速计算session校验码
     ----------------------
     添加user_id
     """
-    return account_id ^ user_id ^ expire_time ^ int(settings.SECRET_KEY)
+    return user_id ^ expire_time ^ int(settings.SECRET_KEY)
 
 
 def create_token(account_id, user_id):
@@ -110,7 +110,7 @@ def create_token(account_id, user_id):
     """
     try:
         expire_time = int(time.time()) + settings.SESSION_COOKIE_AGE
-        code = create_checkcode(account_id, user_id, expire_time)
+        code = create_checkcode(user_id, expire_time)
         token = "%s|%s|%s|%s" % (account_id, user_id, expire_time, code)
         # 对token进行encode,转换成bytearray可接收的类型
         token = strxor(token.encode(), int(settings.SECRET_KEY))
@@ -144,6 +144,7 @@ def decode_token(token, args=''):
             account_id, user_id, expire_time, code = token.split('|')
         else:
             user_id, expire_time, code = token.split('|')
+        print(account_id)
         account_id = int(account_id)
         user_id = int(user_id)
         expire_time = int(expire_time)
@@ -153,9 +154,11 @@ def decode_token(token, args=''):
         return
     nowt = time.time()
     if nowt > expire_time:
+        print(111)
         return
-    check_code = create_checkcode(account_id, user_id, expire_time)
+    check_code = create_checkcode(user_id, expire_time)
     if code != check_code:
+        print(222)
         return
     return {'role': account_id, 'user_id': user_id, 'expire': expire_time}
 

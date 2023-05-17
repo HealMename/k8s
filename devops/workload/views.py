@@ -933,10 +933,12 @@ def terminal_index(request):
     index = request.QUERY.get('index', 0)  # 题目序号
     if request.method == 'GET':
         if not request.user_info:
+            print("not user")
             return redirect(WEB_URL)
         user = request.user_info
         test = db.web.user_test_det.filter(id=message_id, add_user=user['user_id'], role=user['role']).first()
         if not test:
+            print("not test")
             return redirect(WEB_URL)
         question_ids = [x['id'] for x in json.loads(test.content)]
         data = Struct()
