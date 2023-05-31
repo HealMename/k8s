@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-WEB_URL = "http://182.42.126.254:8087"
+WEB_URL = "http://121.36.12.82:8087"
 ROOT_URLCONF = 'devops.urls'
 
 TEMPLATES = [
@@ -87,16 +87,16 @@ DATABASES = {
         'ENGINE': ENGINE,
         'NAME': 'k8s',
         'USER': 'root',
-        'PASSWORD': 'root1234',
-        'HOST': '182.42.126.254',
+        'PASSWORD': '1998330q!',
+        'HOST': '121.36.12.82',
         'PORT': '3306',
 	},
     'web': {
         'ENGINE': ENGINE,
         'NAME': 'recruit',
         'USER': 'root',
-        'PASSWORD': 'root1234',
-        'HOST': '182.42.126.254',
+        'PASSWORD': '1998330q!',
+        'HOST': '121.36.12.82',
         'PORT': '3306',
 	},
 }
