@@ -63,7 +63,7 @@
 
 
      // 打开一个 websocket，django也会把sessionid传过去
-    var ws = new WebSocket('ws://' + window.location.host + '/workload/terminal/' + namespace + '/' + pod_name + '/' + container + '/?auth_type=' + auth_type + '&token=' + token);
+    var ws = new WebSocket('wss://' + window.location.host + '/workload/terminal/' + namespace + '/' + pod_name + '/' + container + '/?auth_type=' + auth_type + '&token=' + token);
     var send_data = ""
     //打开websocket连接，并打开终端
     var now_send = ""

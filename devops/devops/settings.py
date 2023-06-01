@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-WEB_URL = "http://121.36.12.82:8087"
+WEB_URL = "https://www.ittest008.com:81"
 ROOT_URLCONF = 'devops.urls'
 
 TEMPLATES = [

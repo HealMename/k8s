@@ -60,7 +60,7 @@ layui.use('layer', function(){
     var container = document.getElementById('containerSelect').value;
 
      // 打开一个 websocket，django也会把sessionid传过去
-    var ws = new WebSocket('ws://' + window.location.host + '/workload/pods_log/' + namespace + '/' + pod_name + '/' + container + '/?auth_type=' + auth_type + '&token=' + token);
+    var ws = new WebSocket('wss://' + window.location.host + '/workload/pods_log/' + namespace + '/' + pod_name + '/' + container + '/?auth_type=' + auth_type + '&token=' + token);
 
     //打开websocket连接，并打开终端
     ws.onopen = function () {
