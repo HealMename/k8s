@@ -8,6 +8,9 @@ from dashboard import node_data  # 导入计算模块
 
 
 # Create your views here.
+from devops.settings import TOKEN
+
+
 @k8s_tools.self_login_required
 def index(request):
     auth_type = request.session.get("auth_type")
@@ -120,7 +123,7 @@ def namespace_api(request):
     msg = "执行数据返回成功"
     auth_type = request.session.get("auth_type")
     token = request.session.get("token")
-    k8s_tools.load_auth_config(auth_type, token)
+    k8s_tools.load_auth_config('token', TOKEN)
     core_api = client.CoreV1Api()
     # 命名空间选择和命名空间表格同时使用
     if request.method == "GET":

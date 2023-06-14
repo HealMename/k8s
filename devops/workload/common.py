@@ -11,7 +11,7 @@ from libs.utils import db
 def pods_api(auth_type, token, namespace):
     """获取pods"""
     # 接口缓存10分钟
-    redis_key = "pods_api"
+    redis_key = f"pods_api-{namespace}"
     k8s = rd.k8s.get(redis_key)
     if k8s:
         return json.loads(k8s)
@@ -62,12 +62,14 @@ def pods_api(auth_type, token, namespace):
 
 def get_link_url(sid):
     """获取做题连接"""
-    sub = db.web.subjects.get(id=sid)
+    sub = db.web.subjects.get(id=1)
     if not sub:
         return None, '学科不存在'
     namespace = sub.namespace
+    print(namespace)
     pods = pods_api('token', TOKEN, namespace)
-    print(pods)
+    for pod in pods:
+        print(pod)
     return f"/k8workload/terminal_web/?namespace={namespace}" \
            f"&pod_name=mysql-0" \
            f"&containers=container-mysql"

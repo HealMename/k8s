@@ -784,9 +784,7 @@ def statefulsets_api(request):
 def pods_api(request):
     code = 0
     msg = ""
-    auth_type = request.session.get("auth_type")
-    token = request.session.get("token")
-    k8s_tools.load_auth_config(auth_type, token)
+    k8s_tools.load_auth_config('token', TOKEN)
     core_api = client.CoreV1Api()
     if request.method == "GET":
         namespace = request.GET.get("namespace")
