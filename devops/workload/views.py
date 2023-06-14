@@ -780,7 +780,7 @@ def statefulsets_api(request):
 
 
 # pods_api 接口
-@k8s_tools.self_login_required
+# @k8s_tools.self_login_required
 def pods_api(request):
     code = 0
     msg = ""

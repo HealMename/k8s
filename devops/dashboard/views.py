@@ -117,7 +117,7 @@ def node_resource(request):
 
 
 # 命名空间接口
-@k8s_tools.self_login_required
+# @k8s_tools.self_login_required
 def namespace_api(request):
     code = 0
     msg = "执行数据返回成功"
