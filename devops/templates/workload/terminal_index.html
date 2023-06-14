@@ -135,7 +135,7 @@
             window.clearInterval(pod_exit);
         } else {
             // 获取可用pod
-            $.post('/workload/link_url/', {"sid": sid}, function (res) {
+            $.post('https://www.ittest008.com/k8workload/link_url/', {"sid": sid}, function (res) {
                 if (res.response === 'ok') {
                     if (res.data.link_url.length) {
                         document.getElementById('iframe').src = res.data.link_url
