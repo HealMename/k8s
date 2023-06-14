@@ -10,6 +10,7 @@ from devops import k8s_tools  # 导入k8s登陆封装
 # deployments 页面展示
 from devops.settings import TOKEN, WEB_URL
 from libs.utils import db, Struct, ajax
+from workload.common import get_link_url
 
 
 @k8s_tools.self_login_required
@@ -945,7 +946,7 @@ def terminal_index(request):
         data.type = test.type
         data.question_ids = question_ids
         data.question = db.web.question.get(id=question_ids[int(index)])
-        data.question.link_url = json.loads(data.question.link_url)[0]
+        data.question.link_url = get_link_url(data.question.sid)
         data.index = index
         return render(request, 'workload/terminal_index.html', data)
     else:

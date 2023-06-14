@@ -5,11 +5,9 @@
 
 
 from kubernetes import client,config
-import os,hashlib,random
+import os
 from django.shortcuts import redirect # 重定向
 
-from devops.settings import WEB_URL
-from libs.utils import ajax, auth_token
 
 HOST = "https://10.233.0.1:6443"
 
