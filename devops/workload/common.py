@@ -70,7 +70,7 @@ def get_link_url(sid):
     link_url = ''
     for pod in pods:
         pod_name = pod['name']
-        containers = pod['labels'].get('app')
+        containers = pod['containers'][0]['c_name']
         redis_key = f"pod_status-{pod_name}"
         pod_status = rd.k8s.get(redis_key)
         print(pod)
