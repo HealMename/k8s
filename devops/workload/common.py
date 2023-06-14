@@ -63,9 +63,8 @@ def get_link_url(sid):
     """获取做题连接"""
     sub = db.web.subjects.get(id=sid)
     if not sub:
-        return None, '学科不存在'
+        return False, '学科不存在'
     namespace = sub.namespace
-    print(namespace)
     pods = pods_api('token', TOKEN, namespace)
     link_url = ''
     for pod in pods:
@@ -73,7 +72,6 @@ def get_link_url(sid):
         containers = pod['containers'][0]['c_name']
         redis_key = f"pod_status-{pod_name}"
         pod_status = rd.k8s.get(redis_key)
-        print(pod)
         if not pod_status:  # 未使用
             link_url = f"/k8workload/terminal_web/?namespace={namespace}" \
                        f"&pod_name={pod_name}" \
@@ -82,3 +80,5 @@ def get_link_url(sid):
     if not link_url:
         return False, '暂无可用pod'
     return True, link_url
+
+

@@ -944,10 +944,7 @@ def terminal_index(request):
         data.type = test.type
         data.question_ids = question_ids
         data.question = db.web.question.get(id=question_ids[int(index)])
-        is_link, link_url = get_link_url(data.question.sid)
-        data.question.link_url = link_url
         data.index = index
-        data.is_link = int(is_link)
         return render(request, 'workload/terminal_index.html', data)
     else:
         # 提交
@@ -961,4 +958,14 @@ def terminal_index(request):
         else:
             db.web.user_test_det_content.create(det_id=message_id, question_id=qid, content=content, add_time=now)
         return ajax.ajax_ok(message='提交成功')
+
+
+def get_link_status(request):
+    """获取可用的pod连接"""
+    sid = request.POST.get('sid')
+    is_link, link_url = get_link_url(sid)
+    data = Struct()
+    data.link_url = link_url
+    return ajax.ajax_ok(data)
+
 
