@@ -56,20 +56,29 @@ def pods_api(auth_type, token, namespace):
             data.append(po)
     except Exception as e:
         print(e)
-    rd.k8s.set(redis_key, json.dumps(data), timeout=60 * 10)
     return data
 
 
 def get_link_url(sid):
     """获取做题连接"""
-    sub = db.web.subjects.get(id=1)
+    sub = db.web.subjects.get(id=sid)
     if not sub:
         return None, '学科不存在'
     namespace = sub.namespace
     print(namespace)
     pods = pods_api('token', TOKEN, namespace)
+    link_url = ''
     for pod in pods:
+        pod_name = pod['name']
+        containers = pod['labels'].get('app')
+        redis_key = f"pod_status-{pod_name}"
+        pod_status = rd.k8s.get(redis_key)
         print(pod)
-    return f"/k8workload/terminal_web/?namespace={namespace}" \
-           f"&pod_name=mysql-0" \
-           f"&containers=container-mysql"
+        if not pod_status:  # 未使用
+            link_url = f"/k8workload/terminal_web/?namespace={namespace}" \
+                       f"&pod_name={pod_name}" \
+                       f"&containers={containers}"
+            break
+    if not link_url:
+        return False, '暂无可用pod'
+    return True, link_url

@@ -944,8 +944,10 @@ def terminal_index(request):
         data.type = test.type
         data.question_ids = question_ids
         data.question = db.web.question.get(id=question_ids[int(index)])
-        data.question.link_url = get_link_url(data.question.sid)
+        is_link, link_url = get_link_url(data.question.sid)
+        data.question.link_url = link_url
         data.index = index
+        data.is_link = int(is_link)
         return render(request, 'workload/terminal_index.html', data)
     else:
         # 提交
