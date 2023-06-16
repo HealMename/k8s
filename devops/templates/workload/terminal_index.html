@@ -282,8 +282,17 @@
         }
 
     }
-    function onbeforeunload_handler() {
+    window.onbeforeunload = beforeUnload;
+    window.onunload = onunload_handler;
+    function onunload_handler() {
         del_pod()
+    }
+    function beforeUnload(e) {
+        e = e || window.event;
+	      if (e) {
+	        e.returnValue = '关闭提示';
+	      }
+	      return '关闭提示';
     }
 
 
