@@ -974,7 +974,7 @@ def get_link_status(request):
     """获取可用的pod连接"""
     qid = request.POST.get('qid')
     sid = request.POST.get('sid')
-    do_time = request.POST.get('do_time')
+    do_time = int(request.POST.get('do_time'))
     user = request.user_info
     is_link, link_url = get_link_url(sid, do_time, user['user_id'], qid)
     data = Struct()
