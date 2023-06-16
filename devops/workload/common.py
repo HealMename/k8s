@@ -10,6 +10,8 @@ from libs.utils import db
 
 def delete_pods(name, namespace):
     """删除pod"""
+    redis_key = f"pod_status-{name}"
+    rd.k8s.delete(redis_key)
     k8s_tools.load_auth_config('token', TOKEN)
     core_api = client.CoreV1Api()
     # 删除命名空间下的deployment服务 会自动启一个全新的服务
