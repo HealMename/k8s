@@ -274,14 +274,12 @@
 
     function del_pod() {
         if (status != 1){
-            fetch('https://www.ittest008.com/k8workload/del_pod/', {
-		    method: 'POST',
+            fetch('https://www.ittest008.com/k8workload/del_pod/?qid=' + qid, {
+		    method: 'GET',
 		    mode: 'no-cors',
 		    headers: {'Content-Type': 'application/json', "Token": localStorage.getItem('Token')},
 		    keepalive: true,
-            body: {
-		        qid: qid,
-            }
+
 		  });
         }
 
