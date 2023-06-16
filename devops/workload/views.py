@@ -977,8 +977,6 @@ def get_link_status(request):
     sid = request.POST.get('sid')
     do_time = int(request.POST.get('do_time'))
     user = request.user_info
-    print(request.POST, user)
-    logging.info(f"{request.POST, user}")
     is_link, link_url = get_link_url(sid, do_time, user['user_id'], qid)
     data = Struct()
     data.link_url = link_url

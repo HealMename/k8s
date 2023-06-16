@@ -77,7 +77,7 @@ def get_link_url(sid, do_time, user_id, qid):
             f"/k8workload/terminal_web/?namespace={namespace}" \
             f"&pod_name={pod_name}" \
             f"&containers={containers}"
-        return user_redis_link
+        return True, user_redis_link
     else:
         sub = db.web.subjects.get(id=sid)
         if not sub:
