@@ -143,7 +143,7 @@
             // 获取可用pod
             $.post('https://www.ittest008.com/k8workload/link_url/', {"qid": qid, "sid": sid, "do_time": do_time}, function (res) {
                 if (res.response === 'ok') {
-                    if (res.data.link_url.length) {
+                    if (res.data.is_link == 1) {
                         document.getElementById('iframe').src = res.data.link_url
                         layer.closeAll('loading');
                          window.clearInterval(pod_exit);

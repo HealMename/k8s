@@ -979,6 +979,7 @@ def get_link_status(request):
     user = request.user_info
     is_link, link_url = get_link_url(sid, do_time, user['user_id'], qid)
     data = Struct()
+    data.is_link = int(is_link)
     data.link_url = link_url
     return ajax.ajax_ok(data)
 
