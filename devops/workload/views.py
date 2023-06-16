@@ -989,7 +989,7 @@ def delete_pods_api(request):
     qid = request.POST.get('qid')
     user = request.user_info
     user_redis = f"pod_status-{qid}-{user['user_id']}"
-    print(user_redis)
+    logging.info(user_redis)
     link_data = rd.k8s.get(user_redis)
     if link_data:  # 用户之前缓存过
         link_data = json.loads(link_data)
