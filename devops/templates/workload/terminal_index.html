@@ -282,18 +282,11 @@
         }
 
     }
-    window.onbeforeunload = onbeforeunload_handler;
-    window.onunload = onunload_handler;
     function onbeforeunload_handler() {
-        var warning = "确认退出?做题记录将不会保存！";
-        return warning;
+        del_pod()
     }
 
-    function onunload_handler() {
-        del_pod()
-        var warning = "谢谢光临";
-        alert(warning);
-    }
+
 
     function destroyed() {
         // 关闭倒计时
