@@ -273,31 +273,22 @@
     }
 
     function del_pod() {
-        let url = 'https://www.ittest008.com/k8workload/del_pod/'
-        let post_data = {
-            qid: qid,
+        if (status != 1){
+            let url = 'https://www.ittest008.com/k8workload/del_pod/'
+            let post_data = {
+                qid: qid,
+            }
+            $.post(url, post_data)
         }
-        $.post(url, post_data)
+
     }
 
-    var isFresh = false;
-    //页面关闭之前请求接口
-    $(window).unload(function (e) {
-        if (!isFresh && status != 1) {
-            //参数也可以采用formData或blob形式
-            var params = new URLSearchParams({
-                qid: qid,
-            })
-            if (!navigator.sendBeacon) return;
-            var URL = 'https://www.ittest008.com/k8workload/del_pod/';
-            navigator.sendBeacon(URL, params);
-        }
-    });
-
-    //根据变量判断是刷新还是关闭
-    $(window).bind('beforeunload', function () {
-        isFresh = true;
-    })
+    window.onbeforeunload = onbeforeunload_handler;
+    function onbeforeunload_handler() {
+        del_pod()
+        var warning = "确认退出?";
+        return warning;
+    }
 
     function destroyed() {
         // 关闭倒计时
