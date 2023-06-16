@@ -995,4 +995,4 @@ def delete_pods_api(request):
         namespace = link_data['namespace']
         pod_name = link_data['pod_name']
         delete_pods(pod_name, namespace)
-
+    return ajax.ajax_ok()
