@@ -972,7 +972,7 @@ def terminal_index(request):
 
 def get_link_status(request):
     """获取可用的pod连接"""
-    qid = request.QUERY.get('qid')
+    qid = request.POST.get('qid')
     sid = request.POST.get('sid')
     do_time = request.POST.get('do_time')
     user = request.user_info
