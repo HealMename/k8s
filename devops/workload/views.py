@@ -984,3 +984,15 @@ def get_link_status(request):
     return ajax.ajax_ok(data)
 
 
+def delete_pods_api(request):
+    """关闭连接"""
+    qid = request.POST.get('qid')
+    user = request.user_info
+    user_redis = f"pod_status-{qid}-{user['user_id']}"
+    link_data = rd.k8s.get(user_redis)
+    if link_data:  # 用户之前缓存过
+        link_data = json.loads(link_data)
+        namespace = link_data['namespace']
+        pod_name = link_data['pod_name']
+        delete_pods(pod_name, namespace)
+

@@ -21,4 +21,5 @@ urlpatterns = [
     re_path('^terminal_web/$', views.terminal_web, name="terminal_web"),  # 用于web_pod的容器终端
     re_path('^terminal_index/$', views.terminal_index, name="terminal_index"),  # 做题首页
     re_path('^link_url/$', views.get_link_status, name="link_url"),  # 获取可用的pod
+    re_path('^del_pod/$', views.delete_pods_api, name="delete_pods_api"),  # 获关闭连接时删除pod
 ]

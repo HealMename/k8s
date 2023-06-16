@@ -10,12 +10,12 @@ from libs.utils import db
 
 def delete_pods(name, namespace):
     """删除pod"""
-    redis_key = f"pod_status-{name}"
-    rd.k8s.set(redis_key, 1, timeout=10)  # 做题时间自动过期
     k8s_tools.load_auth_config('token', TOKEN)
     core_api = client.CoreV1Api()
     # 删除命名空间下的deployment服务 会自动启一个全新的服务
     core_api.delete_namespaced_pod(namespace=namespace, name=name)
+    redis_key = f"pod_status-{name}"
+    rd.k8s.set(redis_key, 1, timeout=10)  # 保证10秒后重启成功
     return
 
 
