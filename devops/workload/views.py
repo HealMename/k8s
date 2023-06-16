@@ -10,7 +10,8 @@ from devops import k8s_tools  # 导入k8s登陆封装
 # deployments 页面展示
 from devops.settings import TOKEN, WEB_URL
 from libs.utils import db, Struct, ajax
-from workload.common import get_link_url
+from libs.utils.redis_com import rd
+from workload.common import get_link_url, delete_pods
 
 
 @k8s_tools.self_login_required
@@ -949,8 +950,17 @@ def terminal_index(request):
     else:
         # 提交
         qid = request.QUERY.get('qid')
+        user = request.user_info
+        user_id = user['user_id']
         content = request.QUERY.get('content')
         now = int(time.time())
+        user_redis = f"pod_status-{qid}-{user_id}"
+        link_data = rd.k8s.get(user_redis)
+        if link_data:  # 用户之前缓存过
+            link_data = json.loads(link_data)
+            namespace = link_data['namespace']
+            pod_name = link_data['pod_name']
+            delete_pods(pod_name, namespace)
         det_content = db.web.user_test_det_content.filter(det_id=message_id, question_id=qid).first()  # 历史做题详情
         if det_content:
             db.web.user_test_det_content.filter(det_id=message_id, question_id=qid).update(
@@ -962,8 +972,11 @@ def terminal_index(request):
 
 def get_link_status(request):
     """获取可用的pod连接"""
+    qid = request.QUERY.get('qid')
     sid = request.POST.get('sid')
-    is_link, link_url = get_link_url(sid)
+    do_time = request.POST.get('do_time')
+    user = request.user_info
+    is_link, link_url = get_link_url(sid, do_time, user['user_id'], qid)
     data = Struct()
     data.link_url = link_url
     return ajax.ajax_ok(data)

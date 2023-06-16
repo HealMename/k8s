@@ -106,13 +106,19 @@
 <script src="/static/js/jquery-1.11.3.min.js"></script>
 <script src="/static/js/common.js"></script>
 <script>
-    $(function () {
-        // countDown()  // 开始倒计时
-    })
+
     var token = "{{ request.GET.token }}";
     if (token) {
         localStorage.setItem('Token', token);
     }
+    var status = 0;
+    var do_time = {{ question.do_time }};
+    var inter = null;
+    var index = {{ index }};
+    var qid = {{ question.id }};
+    var message_id = {{ request.GET.id }};
+    var max_length = {{ question_ids|length }};
+    var content = []; // 做题详情
     var sid = {{ question.sid }};
     layer.load(2, {
         shade: [0.6, '#fff'], content: '容器加载中...', success: function (layero) {
@@ -135,7 +141,7 @@
             window.clearInterval(pod_exit);
         } else {
             // 获取可用pod
-            $.post('https://www.ittest008.com/k8workload/link_url/', {"sid": sid}, function (res) {
+            $.post('https://www.ittest008.com/k8workload/link_url/', {"qid": qid, "sid": sid, "do_time": do_time}, function (res) {
                 if (res.response === 'ok') {
                     if (res.data.link_url.length) {
                         document.getElementById('iframe').src = res.data.link_url
@@ -147,14 +153,7 @@
             })
         }
     }, 1000);
-    var status = 0;
-    var do_time = {{ question.do_time }};
-    var inter = null;
-    var index = {{ index }};
-    var qid = {{ question.id }};
-    var message_id = {{ request.GET.id }};
-    var max_length = {{ question_ids|length }};
-    var content = []; // 做题详情
+
     // 发送命令 暂时不用
     // if (sid === 2){
     //    window.frames["terminal"].send_str();

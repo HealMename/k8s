@@ -8,13 +8,17 @@ from devops.settings import TOKEN
 from libs.utils import db
 
 
+def delete_pods(name, namespace):
+    """删除pod"""
+    k8s_tools.load_auth_config('token', TOKEN)
+    core_api = client.CoreV1Api()
+    # 删除命名空间下的deployment服务 会自动启一个全新的服务
+    core_api.delete_namespaced_pod(namespace=namespace, name=name)
+    return
+
+
 def pods_api(auth_type, token, namespace):
     """获取pods"""
-    # 接口缓存10分钟
-    redis_key = f"pods_api-{namespace}"
-    k8s = rd.k8s.get(redis_key)
-    if k8s:
-        return json.loads(k8s)
     k8s_tools.load_auth_config(auth_type, token)
     core_api = client.CoreV1Api()
     data = []
@@ -59,26 +63,47 @@ def pods_api(auth_type, token, namespace):
     return data
 
 
-def get_link_url(sid):
+def get_link_url(sid, do_time, user_id, qid):
     """获取做题连接"""
-    sub = db.web.subjects.get(id=sid)
-    if not sub:
-        return False, '学科不存在'
-    namespace = sub.namespace
-    pods = pods_api('token', TOKEN, namespace)
-    link_url = ''
-    for pod in pods:
-        pod_name = pod['name']
-        containers = pod['containers'][0]['c_name']
-        redis_key = f"pod_status-{pod_name}"
-        pod_status = rd.k8s.get(redis_key)
-        if not pod_status:  # 未使用
-            link_url = f"/k8workload/terminal_web/?namespace={namespace}" \
-                       f"&pod_name={pod_name}" \
-                       f"&containers={containers}"
-            break
-    if not link_url:
-        return False, '暂无可用pod'
-    return True, link_url
+
+    user_redis = f"pod_status-{qid}-{user_id}"
+    link_data = rd.k8s.get(user_redis)
+    if link_data:  # 用户之前缓存过
+        link_data = json.loads(link_data)
+        namespace = link_data['namespace']
+        pod_name = link_data['pod_name']
+        containers = link_data['containers']
+        user_redis_link = \
+            f"/k8workload/terminal_web/?namespace={namespace}" \
+            f"&pod_name={pod_name}" \
+            f"&containers={containers}"
+        return user_redis_link
+    else:
+        sub = db.web.subjects.get(id=sid)
+        if not sub:
+            return False, '学科不存在'
+        namespace = sub.namespace
+        pods = pods_api('token', TOKEN, namespace)
+        link_url = ''
+        for pod in pods:
+            pod_name = pod['name']
+            containers = pod['containers'][0]['c_name']
+            redis_key = f"pod_status-{pod_name}"
+            pod_status = rd.k8s.get(redis_key)
+            if not pod_status:  # 未使用
+                link_url = f"/k8workload/terminal_web/?namespace={namespace}" \
+                           f"&pod_name={pod_name}" \
+                           f"&containers={containers}"
+                link_data = {
+                    'namespace': namespace,
+                    'pod_name': pod_name,
+                    'containers': containers,
+                }
+                rd.k8s.set(redis_key, json.dumps(link_data), timeout=60 * do_time)  # 做题时间自动过期
+                rd.k8s.set(user_redis, json.dumps(link_data), timeout=60 * do_time)  # 做题时间自动过期
+                break
+        if not link_url:
+            return False, '暂无可用pod'
+        return True, link_url
 
 
