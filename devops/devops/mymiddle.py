@@ -56,6 +56,7 @@ class CoreMiddle(MiddlewareMixin):
             log.error(token)
             if token:
                 request.user_info = auth_token.decode_token(token)
+                log.error(f"user_info:=={request.user_info}")
                 if request.user_info:
                     request._newtoken = token
             if r:

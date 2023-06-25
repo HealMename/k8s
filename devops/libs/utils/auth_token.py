@@ -136,6 +136,8 @@ def decode_token(token, args=''):
             token += '=' * missing_padding
         # token += '=' * (-len(token) % 4)
         token = base64.b64decode(token)
+        # if '\\x' in str(token):
+        #     return
         token = strxor(token, int(settings.SECRET_KEY))
         # 将token转换成str类型
         token = token.decode("utf-8")
@@ -144,8 +146,7 @@ def decode_token(token, args=''):
             account_id, user_id, expire_time, code = token.split('|')
         else:
             user_id, expire_time, code = token.split('|')
-        print(account_id)
-        account_id = int(account_id)
+        account_id = account_id
         user_id = int(user_id)
         expire_time = int(expire_time)
         code = int(code)
@@ -154,11 +155,9 @@ def decode_token(token, args=''):
         return
     nowt = time.time()
     if nowt > expire_time:
-        print(111)
         return
     check_code = create_checkcode(user_id, expire_time)
     if code != check_code:
-        print(222)
         return
     return {'role': account_id, 'user_id': user_id, 'expire': expire_time}
 
