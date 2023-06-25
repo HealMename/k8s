@@ -53,6 +53,7 @@ class CoreMiddle(MiddlewareMixin):
             request.QUERY = query
             token = request.QUERY.get('token') or request.META.get('HTTP_TOKEN')
             request.user_info = {}
+            log.error(token)
             if token:
                 request.user_info = auth_token.decode_token(token)
                 if request.user_info:
