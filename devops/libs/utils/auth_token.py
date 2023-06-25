@@ -163,7 +163,7 @@ def decode_token(token, args=''):
         account_id = 2
     elif account_id in ['yonghu']:
         account_id = 1
-    else:
+    elif account_id in ['gongsi']:
         account_id = 4
     return {'role': account_id, 'user_id': user_id, 'expire': expire_time}
 
