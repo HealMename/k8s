@@ -140,8 +140,8 @@
         if (exit_pod < 0) {
             window.clearInterval(pod_exit);
         } else {
-            // 获取可用pod
-            $.post('https://www.ittest008.com/k8workload/link_url/', {
+            // 获取可用pod https://www.ittest008.com/k8
+            $.post('/workload/link_url/', {
                 "qid": qid,
                 "sid": sid,
                 "do_time": do_time

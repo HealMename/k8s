@@ -51,7 +51,7 @@ class CoreMiddle(MiddlewareMixin):
             r = self.cross_domain(request)
 
             request.QUERY = query
-            token = request.QUERY.get('token') or request.META.get('HTTP_TOKEN') or request.COOKIES.get('sessionid')
+            token = request.QUERY.get('token') or request.META.get('HTTP_TOKEN')
             request.user_info = {}
             if token:
                 request.user_info = auth_token.decode_token(token)
