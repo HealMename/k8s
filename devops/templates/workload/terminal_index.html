@@ -183,28 +183,33 @@
     function push_content(text) {
         // 暂存题目的做题记录
         content.push(text)
+
+        // 保存做题记录
+        let url = window.location.href
+        let post_data = {
+            qid: qid,
+            content: JSON.stringify(text)
+        }
+        $.post(url, post_data, function (res) {
+            if (res.response === 'ok') {
+
+            }
+        })
+
+
     }
 
     function save_content(next_url) {
         if (status === '1' && !next_url) {
             return msg_fail("连接已关闭！")
         }
-        // 保存做题记录
-        let url = window.location.href
-        let post_data = {
-            qid: qid,
-            content: JSON.stringify(content)
-        }
-        $.post(url, post_data, function (res) {
-            if (res.response === 'ok') {
-                window.frames["terminal"].close_ws();
-                destroyed()
-                status = '1'
-                msg_ok("提交成功，连接已关闭", function () {
-                    if (next_url) {
-                        location.href = next_url
-                    }
-                })
+        window.frames["terminal"].close_ws();
+        destroyed()
+        status = '1'
+        del_pod()
+        msg_ok("提交成功，连接已关闭", function () {
+            if (next_url) {
+                location.href = next_url
             }
         })
     }
@@ -248,7 +253,7 @@
     function set_exit_count() {
         exit_count = 5 * 60
     }
-
+    // 做题倒计时
     function countDown() {
 
         let now = new Date().getTime();
@@ -272,6 +277,7 @@
         }
     }
 
+    // 删除pod
     function del_pod() {
         if (status != 1){
             fetch('https://www.ittest008.com/k8workload/del_pod/?qid=' + qid, {

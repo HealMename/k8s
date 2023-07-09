@@ -951,23 +951,16 @@ def terminal_index(request):
     else:
         # 提交
         qid = request.QUERY.get('qid')
-        user = request.user_info
-        user_id = user['user_id']
-        content = request.QUERY.get('content')
+        content = json.loads(request.QUERY.get('content'))
         now = int(time.time())
-        user_redis = f"pod_status-{qid}-{user_id}"
-        link_data = rd.k8s.get(user_redis)
-        if link_data:  # 用户之前缓存过
-            link_data = json.loads(link_data)
-            namespace = link_data['namespace']
-            pod_name = link_data['pod_name']
-            delete_pods(pod_name, namespace)
         det_content = db.web.user_test_det_content.filter(det_id=message_id, question_id=qid).first()  # 历史做题详情
         if det_content:
+            data = json.loads(det_content.content)
+            data.append(content)
             db.web.user_test_det_content.filter(det_id=message_id, question_id=qid).update(
-                add_time=now, content=content)
+                add_time=now, content=json.dumps(data))
         else:
-            db.web.user_test_det_content.create(det_id=message_id, question_id=qid, content=content, add_time=now)
+            db.web.user_test_det_content.create(det_id=message_id, question_id=qid, content=json.dumps([content]), add_time=now)
         return ajax.ajax_ok(message='提交成功')
 
 
