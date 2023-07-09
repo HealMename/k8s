@@ -945,7 +945,10 @@ def terminal_index(request):
         data = Struct()
         data.type = test.type
         data.question_ids = question_ids
-        data.question = db.web.question.get(id=question_ids[int(index)])
+        qid = question_ids[int(index)]
+        data.question = db.web.question.get(id=qid)
+        step_list = db.web.question_step_detail.filter(question_id=qid, status=1).order_by('sequence')
+        data.question.step_list = [{'content': x.content} for x in step_list]
         data.index = index
         return render(request, 'workload/terminal_index.html', data)
     else:

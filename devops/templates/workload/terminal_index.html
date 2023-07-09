@@ -64,7 +64,9 @@
             <div class="layui-card" style="height: 569px;overflow: scroll;">
                 <div class="layui-card-header"><b>题目详情</b></div>
                 <div class="layui-card-body">
-                    {{ question.content|safe }}
+                    {% for step in question.step_list %}
+                        {{ step.content|safe }}
+                    {% endfor %}
                 </div>
             </div>
         </div>
