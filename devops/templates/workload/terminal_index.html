@@ -150,10 +150,13 @@
             }, function (res) {
                 if (res.response === 'ok') {
                     if (res.data.is_link == 1) {
-                        document.getElementById('iframe').src = res.data.link_url
-                        layer.closeAll('loading');
-                        window.clearInterval(pod_exit);
-                        countDown()
+                        var timer = setTimeout(function () {
+                            document.getElementById('iframe').src = res.data.link_url
+                            layer.closeAll('loading');
+                            window.clearInterval(pod_exit);
+                            countDown()
+                            clearTimeout(timer)
+                        }, 2000)
                     }
                 }
             })
