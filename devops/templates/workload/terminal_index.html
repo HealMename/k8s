@@ -50,6 +50,25 @@
             padding: 5px 10px;
             border-radius: 3px;
         }
+        .q_info .layui-card-header{
+            border: 1px solid #CCCCCC;
+            margin: 10px;
+        }
+        .q_title{
+            font-size: 23px;
+        }
+        .q_icon{
+            float: right;
+        }
+        .step_down,.answer_down{
+            display: none;
+        }
+        .step_list,.answer_list{
+            cursor: pointer;
+        }
+        .step_list_det,.answer_list_det{
+            display: none;
+        }
     </style>
 </head>
 
@@ -60,12 +79,27 @@
 </ul>
 <div class="layui-bg-gray" style="padding: 10px; padding-bottom: 0;">
     <div class="layui-row layui-col-space15">
-        <div class="layui-col-md4">
+        <div class="layui-col-md4 q_info">
             <div class="layui-card" style="height: 569px;overflow: scroll;">
-                <div class="layui-card-header"><b>题目详情</b></div>
+                <div class="layui-card-header"><b>题目信息</b></div>
                 <div class="layui-card-body">
+                    <p><span class="q_title">{{ question.title }}</span> (ID: {{ question.id }})</p>
+                    <p>描述: {{ question.desc }}</p>
+                    <p>级别: {{ question.level }}</p>
+                    <p>规模: {{ question.size }}</p>
+                    <p>版本: {{ question.version }}</p>
+                    <p>考点: {{ question.do_points }}</p>
+                </div>
+                <div class="layui-card-header step_list" onclick="show_step(1)"><b>解题步骤</b> <i class="layui-icon q_icon step_down">&#xe61a;</i><i class="layui-icon q_icon step_up">&#xe619;</i></div>
+                <div class="layui-card-body step_list_det" data-anim="layui-anim-downbit">
                     {% for step in question.step_list %}
-                        {{ step.content|safe }}
+                        <p>步骤：{{ forloop.counter }}: {{ step.content|safe }}</p>
+                    {% endfor %}
+                </div>
+            <div class="layui-card-header answer_list" onclick="show_step(2)"><b>解题步骤</b> <i class="layui-icon q_icon answer_down">&#xe61a;</i><i class="layui-icon q_icon answer_up">&#xe619;</i></div>
+                <div class="layui-card-body answer_list_det" data-anim="layui-anim-downbit">
+                    {% for step in question.answer_list %}
+                        <p>步骤：{{ forloop.counter }}: {{ step.content|safe }}</p>
                     {% endfor %}
                 </div>
             </div>
@@ -115,6 +149,7 @@
     }
     var status = 0;
     var do_time = {{ question.do_time }};
+    var is_view = {{ is_view }};
     var inter = null;
     var index = {{ index }};
     var qid = {{ question.id }};
@@ -136,35 +171,69 @@
         }
     });
     // 获取可用pod 5分钟未获取到可用操作容器自动关闭
-    var exit_pod = 5 * 60
-    var pod_exit = window.setInterval(function () {
-        exit_pod = exit_pod - 1;
-        if (exit_pod < 0) {
-            window.clearInterval(pod_exit);
-        } else {
-            // 获取可用pod https://www.ittest008.com/k8
-            $.post('https://www.ittest008.com/k8workload/link_url/', {
-                "test_id": message_id,
-                "sid": sid,
-                "do_time": do_time
-            }, function (res) {
-                if (res.response === 'ok') {
-                    if (res.data.is_link == 1) {
-                        document.getElementById('iframe').src = res.data.link_url
-                        layer.closeAll('loading');
-                        window.clearInterval(pod_exit);
-                        countDown()
+    if (is_view === 0){
+        window.onbeforeunload = beforeUnload;
+        window.onunload = onunload_handler;
+        var exit_pod = 5 * 60
+        var pod_exit = window.setInterval(function () {
+            exit_pod = exit_pod - 1;
+            if (exit_pod < 0) {
+                window.clearInterval(pod_exit);
+            } else {
+                // 获取可用pod https://www.ittest008.com/k8
+                $.post('https://www.ittest008.com/k8workload/link_url/', {
+                    "test_id": message_id,
+                    "sid": sid,
+                    "do_time": do_time
+                }, function (res) {
+                    if (res.response === 'ok') {
+                        if (res.data.is_link == 1) {
+                            document.getElementById('iframe').src = res.data.link_url
+                            layer.closeAll('loading');
+                            window.clearInterval(pod_exit);
+                            countDown()
+                        }
                     }
-                }
-            })
-        }
-    }, 1000);
+                })
+            }
+        }, 1000);
+    }else{
+        layer.closeAll('loading');
+    }
+
 
     // 发送命令 暂时不用
     // if (sid === 2){
     //    window.frames["terminal"].send_str();
     // }
-
+    // 隐藏显示步骤
+    var step_type = 1;
+    var answer_type = 1;
+    function show_step(type) {
+        if(type === 1 && step_type === 1){
+            $('.step_list_det').show()
+            $('.step_down').show()
+            $('.step_up').hide()
+            step_type = 0
+        }else if (type === 1 && step_type === 0){
+            $('.step_list_det').hide()
+            $('.step_down').hide()
+            $('.step_up').show()
+            step_type = 1
+        }
+        else if (type === 2 && answer_type === 1){
+            $('.answer_list_det').show()
+            $('.answer_down').show()
+            $('.answer_up').hide()
+            answer_type = 0
+        }
+        else if (type === 2 && answer_type === 0){
+            $('.answer_list_det').hide()
+            $('.answer_down').hide()
+            $('.answer_up').show()
+            answer_type = 1
+        }
+    }
     function next_q(type) {
         // 1上一题 2下一题
         if (type === 1) {
@@ -292,8 +361,7 @@
         }
 
     }
-    window.onbeforeunload = beforeUnload;
-    window.onunload = onunload_handler;
+
     function onunload_handler() {
         del_pod()
     }

@@ -931,6 +931,7 @@ def terminal_web(request):
 def terminal_index(request):
     """做题页"""
     message_id = request.QUERY.get('id')  # 做题记录id
+    is_view = request.QUERY.get('is_view', 0)  # 0做题 1预览
     index = request.QUERY.get('index', 0)  # 题目序号
     if request.method == 'GET':
         if not request.user_info:
@@ -944,12 +945,13 @@ def terminal_index(request):
         question_ids = [x['id'] for x in json.loads(test.content)]
         data = Struct()
         data.test_id = message_id
+        data.is_view = is_view
         data.type = test.type
         data.question_ids = question_ids
         qid = question_ids[int(index)]
         data.question = db.web.question.get(id=qid)
-        step_list = db.web.question_step_detail.filter(question_id=qid, status=1).order_by('sequence')
-        data.question.step_list = [{'content': x.content} for x in step_list]
+        data.question.step_list = db.web.question_step_detail.filter(question_id=qid, status=1).order_by('sequence')
+        data.question.answer_list = db.web.question_step_answer.filter(question_id=qid, status=1).order_by('sequence')
         data.index = index
         return render(request, 'workload/terminal_index.html', data)
     else:
