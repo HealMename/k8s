@@ -96,7 +96,7 @@
                         <p>步骤：{{ forloop.counter }}: {{ step.content|safe }}</p>
                     {% endfor %}
                 </div>
-            <div class="layui-card-header answer_list" onclick="show_step(2)"><b>解题步骤</b> <i class="layui-icon q_icon answer_down">&#xe61a;</i><i class="layui-icon q_icon answer_up">&#xe619;</i></div>
+            <div class="layui-card-header answer_list" onclick="show_step(2)"><b>答题步骤</b> <i class="layui-icon q_icon answer_down">&#xe61a;</i><i class="layui-icon q_icon answer_up">&#xe619;</i></div>
                 <div class="layui-card-body answer_list_det" data-anim="layui-anim-downbit">
                     {% for step in question.answer_list %}
                         <p>步骤：{{ forloop.counter }}: {{ step.content|safe }}</p>
