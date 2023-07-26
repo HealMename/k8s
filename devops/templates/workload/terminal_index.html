@@ -150,17 +150,15 @@
             }, function (res) {
                 if (res.response === 'ok') {
                     if (res.data.is_link == 1) {
-                        setTimeout(function () {
-                            document.getElementById('iframe').src = res.data.link_url
-                            layer.closeAll('loading');
-                            window.clearInterval(pod_exit);
-                            countDown()
-                        }, 2000)
+                        document.getElementById('iframe').src = res.data.link_url
+                        layer.closeAll('loading');
+                        window.clearInterval(pod_exit);
+                        countDown()
                     }
                 }
             })
         }
-    }, 3000);
+    }, 1000);
 
     // 发送命令 暂时不用
     // if (sid === 2){

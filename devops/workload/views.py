@@ -976,6 +976,8 @@ def get_link_status(request):
     is_link, link_url = get_link_url(sid, do_time, test_id)
     data = Struct()
     data.is_link = int(is_link)
+    if int(is_link):
+        time.sleep(2)
     data.link_url = link_url
     return ajax.ajax_ok(data)
 
