@@ -943,6 +943,7 @@ def terminal_index(request):
             return redirect(WEB_URL)
         question_ids = [x['id'] for x in json.loads(test.content)]
         data = Struct()
+        data.test_id = message_id
         data.type = test.type
         data.question_ids = question_ids
         qid = question_ids[int(index)]
@@ -969,11 +970,10 @@ def terminal_index(request):
 
 def get_link_status(request):
     """获取可用的pod连接"""
-    qid = request.POST.get('qid')
     sid = request.POST.get('sid')
+    test_id = request.POST.get('test_id')
     do_time = int(request.POST.get('do_time'))
-    user = request.user_info
-    is_link, link_url = get_link_url(sid, do_time, user['user_id'], qid)
+    is_link, link_url = get_link_url(sid, do_time, test_id)
     data = Struct()
     data.is_link = int(is_link)
     data.link_url = link_url
@@ -982,9 +982,8 @@ def get_link_status(request):
 
 def delete_pods_api(request):
     """关闭连接"""
-    qid = request.GET.get('qid')
-    user = request.user_info
-    user_redis = f"pod_status-{qid}-{user['user_id']}"
+    test_id = request.GET.get('test_id')
+    user_redis = f"pod_status-{test_id}"
     link_data = rd.k8s.get(user_redis)
     if link_data:  # 用户之前缓存过
         link_data = json.loads(link_data)

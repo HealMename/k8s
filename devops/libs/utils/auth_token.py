@@ -159,12 +159,6 @@ def decode_token(token, args=''):
     check_code = create_checkcode(user_id, expire_time)
     if code != check_code:
         return
-    if account_id in ['users']:
-        account_id = 2
-    elif account_id in ['yonghu']:
-        account_id = 1
-    elif account_id in ['gongsi']:
-        account_id = 4
     return {'role': account_id, 'user_id': user_id, 'expire': expire_time}
 
 

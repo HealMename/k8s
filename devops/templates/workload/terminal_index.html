@@ -144,7 +144,7 @@
         } else {
             // 获取可用pod https://www.ittest008.com/k8
             $.post('https://www.ittest008.com/k8workload/link_url/', {
-                "qid": qid,
+                "test_id": message_id,
                 "sid": sid,
                 "do_time": do_time
             }, function (res) {
@@ -282,7 +282,7 @@
     // 删除pod
     function del_pod() {
         if (status != 1){
-            fetch('https://www.ittest008.com/k8workload/del_pod/?qid=' + qid, {
+            fetch('https://www.ittest008.com/k8workload/del_pod/?test_id=' + message_id, {
 		    method: 'GET',
 		    mode: 'no-cors',
 		    headers: {'Content-Type': 'application/json', "Token": localStorage.getItem('Token')},

@@ -65,10 +65,10 @@ def pods_api(auth_type, token, namespace):
     return data
 
 
-def get_link_url(sid, do_time, user_id, qid):
+def get_link_url(sid, do_time, test_id):
     """获取做题连接"""
 
-    user_redis = f"pod_status-{qid}-{user_id}"
+    user_redis = f"pod_status-{test_id}"
     link_data = rd.k8s.get(user_redis)
     if link_data:  # 用户之前缓存过
         link_data = json.loads(link_data)
