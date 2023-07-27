@@ -254,7 +254,7 @@
     function push_content(text) {
         // 暂存题目的做题记录
         content.push(text)
-
+        set_exit_count()
         // 保存做题记录
         let url = window.location.href
         let post_data = {
