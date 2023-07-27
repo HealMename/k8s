@@ -312,6 +312,7 @@
                 time: 2000,
                 icon: 5
             }, function () {
+                save_content()
                 window.clearInterval(inter);
                 window.frames["terminal"].close_ws();
             })
@@ -334,7 +335,8 @@
             count = count / 1000
             inter = window.setInterval(function () {
                 count = count - 1;
-                if (count < 0) {
+                if (count <= 0) {
+                    save_content()
                     window.clearInterval(inter);
                     layer.msg("时间到了！", {
                         time: 2000,
