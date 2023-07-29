@@ -964,7 +964,7 @@ def terminal_index(request):
             data = json.loads(det_content.content)
             data.append(content)
             db.web.user_test_det_content.filter(det_id=message_id, question_id=qid).update(
-                add_time=now, content=json.dumps(data))
+                update_time=now, content=json.dumps(data))
             db.web.user_test_det.filter(id=message_id).update(do_time=now)
         else:
             db.web.user_test_det_content.create(det_id=message_id, question_id=qid, content=json.dumps([content]), add_time=now)
