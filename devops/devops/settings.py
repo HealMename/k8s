@@ -9,16 +9,18 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-
+import json
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
-
+# 读取数据库配置文件
+config_file = os.path.join(BASE_DIR, '.env')
+with open(config_file) as f:
+    config = f.read()
+    DATABASES_CONFIG = json.loads(config)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '10086'
 SESSION_COOKIE_AGE = 60 * 60 * 24  # token有效期
@@ -55,7 +57,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-WEB_URL = "https://www.ittest008.com"
+WEB_URL = DATABASES_CONFIG['WEB_URL']
 ROOT_URLCONF = 'devops.urls'
 
 TEMPLATES = [

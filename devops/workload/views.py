@@ -926,6 +926,11 @@ def terminal_web(request):
                'token': TOKEN}
     return render(request, 'workload/terminal_web.html', {'connect': connect})
 
+def all_subjects():
+    """获取所有科目"""
+    data = {x.id: x.name for x in db.web.subjects.filter(status=1).select('id', 'name')}
+    return data
+
 
 @xframe_options_exempt  # 这个是用于跨域请求
 def terminal_index(request):
@@ -944,15 +949,19 @@ def terminal_index(request):
             return redirect(WEB_URL)
         question_ids = [x['id'] for x in json.loads(test.content)]
         data = Struct()
+        subjects = all_subjects()
+
         data.test_id = message_id
         data.is_view = is_view
         data.type = test.type
         data.question_ids = question_ids
         qid = question_ids[int(index)]
         data.question = db.web.question.get(id=qid)
+        data.sname = subjects[data.question.sid]
         data.question.step_list = db.web.question_step_detail.filter(question_id=qid, status=1).order_by('sequence')
         data.question.answer_list = db.web.question_step_answer.filter(question_id=qid, status=1).order_by('sequence')
         data.index = index
+        data.web_url = WEB_URL
         return render(request, 'workload/terminal_index.html', data)
     else:
         # 提交
@@ -994,3 +1003,5 @@ def delete_pods_api(request):
         pod_name = link_data['pod_name']
         delete_pods(pod_name, namespace)
     return ajax.ajax_ok()
+
+
