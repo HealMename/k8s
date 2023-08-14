@@ -172,17 +172,23 @@
     </div>
 </div>
 <div class="subject_level" style="display: none">
-    <p style="font-size: 23px;padding: 20px;padding-bottom:0;">我的战报 <a href="{{ web_url }}/?target=2" target="_blank" type="button" class="layui-btn" style="float: right;margin-right: 13px;">去查看更多战报</a></p>
+    <p style="font-size: 23px;padding: 20px;padding-bottom:0;">我的战报 <a href="{{ web_url }}/?target=2" target="_blank"
+                                                                       type="button" class="layui-btn"
+                                                                       style="float: right;margin-right: 13px;">去查看更多战报</a>
+    </p>
     <span style="font-size: 12px;color: #CCC;margin: 24px">分享战报，邀请好友注册，领现金红包</span>
     <div class="sub_main">
         <div class="sub_img level1"><img src="https://www.ittest008.com/media/img/not_img.png" alt="">
-            <p style="text-align: center;" >在做10道题可获得</p></div>
+            <p style="text-align: center;">在做10道题可获得</p></div>
         <div class="sub_img level2"><img src="https://www.ittest008.com/media/img/not_img.png"
-                                  alt=""><p style="text-align: center;" >在做20道题可获得</p></div>
+                                         alt="">
+            <p style="text-align: center;">在做20道题可获得</p></div>
         <div class="sub_img level3"><img src="https://www.ittest008.com/media/img/not_img.png"
-                                  alt=""><p style="text-align: center;" >在做30道题可获得</p></div>
+                                         alt="">
+            <p style="text-align: center;">在做30道题可获得</p></div>
         <div class="sub_img level4"><img src="https://www.ittest008.com/media/img/not_img.png"
-                                  alt=""><p style="text-align: center;" >在做40道题可获得</p></div>
+                                         alt="">
+            <p style="text-align: center;">在做40道题可获得</p></div>
 
     </div>
 
@@ -341,24 +347,33 @@
     function subject_level() {
         layer.open({
             type: 1,
-            shade: 0,
+            shade: 0.1,
             area: ['898px', '485px'],
+            closeBtn: false,
             content: $(".subject_level").html(),
             success: function () {
                 var index = layer.load(1);
                 $.each([1, 2, 3, 4], function (item, index) {
-                        $.post('{{ web_url }}/tea/user_star/',  {
-                            sid: {{question.sid}},
-                            level: item+1,
-                            subject: "{{sname}}",
-                        }, function (res) {
-                            $(`.level${item+1}`).html(`
+                    $.post('{{ web_url }}/tea/user_star/', {
+                        sid: {{question.sid}},
+                        level: item + 1,
+                        subject: "{{sname}}",
+                    }, function (res) {
+                        if ((item + 1) * 10 <= res.data.star_num) {
+                            $(`.level${item + 1}`).html(`
 <img src="${res.data.img}" alt="">
-<p style="text-align: center;" >在做${(item+1)*10-res.data.star_num}道题可获得</p>
+<p style="text-align: center;" >已获得</p>
 `)
+                        } else {
+                            $(`.level${item + 1}`).html(`
+<img src="${res.data.img}" alt="">
+<p style="text-align: center;" >在做${(item + 1) * 10 - res.data.star_num}道题可获得</p>
+`)
+                        }
 
-                        })
+
                     })
+                })
                 layer.close(index);
             },
             title: '',
