@@ -14,7 +14,7 @@ node_modules/
 local_settings.py
 settings_dawang.py
 .settings
-tbkt/.env
+devops/.env
 .env1
 .devenv
 #apidoc/
