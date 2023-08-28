@@ -59,7 +59,7 @@
     console.log(namespace)
     console.log(pod_name)
     console.log(container)
-
+    var cmd = "{{ request.GET.cmd }}"
 
      // 打开一个 websocket，django也会把sessionid传过去
     var ws = new WebSocket('wss://' + window.location.host + '/k8workload/terminal/' + namespace + '/' + pod_name + '/' + container + '/?auth_type=' + auth_type);
@@ -67,6 +67,9 @@
     //打开websocket连接，并打开终端
     var now_send = ""
     ws.onopen = function () {
+        if (cmd){
+            ws.send(cmd)
+        }
         // 实时监控输入的字符串发送到后端
         term.on('data', function (data) {
             ws.send(data);

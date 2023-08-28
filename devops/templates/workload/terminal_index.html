@@ -247,15 +247,10 @@
                 }, function (res) {
                     if (res.response === 'ok') {
                         if (res.data.is_link == 1) {
-                            document.getElementById('iframe').src = res.data.link_url
+                            document.getElementById('iframe').src = res.data.link_url + `&cmd=${cmd}`
                             layer.closeAll('loading');
                             window.clearInterval(pod_exit);
                             countDown()
-
-                            let timer = setTimeout(function () {
-                                window.frames["terminal"].send_cmd(cmd);
-                                clearTimeout(timer)
-                            }, 300)
                         }
                     }
                 })
