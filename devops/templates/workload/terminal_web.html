@@ -55,10 +55,6 @@
     var namespace = '{{ connect.namespace }}';
     var pod_name = '{{ connect.pod_name }}';
     var container = document.getElementById('containerSelect').value;
-    console.log(auth_type)
-    console.log(namespace)
-    console.log(pod_name)
-    console.log(container)
     var cmd = "{{ request.GET.cmd }}"
 
      // 打开一个 websocket，django也会把sessionid传过去
