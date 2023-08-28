@@ -68,7 +68,7 @@
     var now_send = ""
     ws.onopen = function () {
         if (cmd){
-            ws.send(cmd)
+            ws.send(cmd + '\r')
         }
         // 实时监控输入的字符串发送到后端
         term.on('data', function (data) {
