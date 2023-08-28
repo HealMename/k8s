@@ -215,6 +215,7 @@
     var content = []; // 做题详情
     var sid = {{ question.sid }};
     var sname = "{{ sname }}";
+    var cmd = "{{ init_cmd }}";
     layer.load(2, {
         shade: [0.6, '#fff'], content: '容器加载中...', success: function (layero) {
             layero.find('.layui-layer-content').css({
@@ -250,6 +251,11 @@
                             layer.closeAll('loading');
                             window.clearInterval(pod_exit);
                             countDown()
+
+                            let timer = setTimeout(function () {
+                                window.frames["terminal"].send_cmd(cmd);
+                                clearTimeout(timer)
+                            }, 300)
                         }
                     }
                 })
@@ -259,11 +265,6 @@
         layer.closeAll('loading');
     }
 
-
-    // 发送命令 暂时不用
-    // if (sid === 2){
-    //    window.frames["terminal"].send_str();
-    // }
     // 隐藏显示步骤
     var step_type = 1;
     var answer_type = 1;
@@ -365,9 +366,9 @@
 `)
                         } else {
                             $(`.level${item + 1}`).html(`
-<img src="${res.data.img}" alt="">
-<p style="text-align: center;" >再做${(item + 1) * 10 - res.data.star_num}道题可获得</p>
-`)
+                            <img src="${res.data.img}" alt="">
+                            <p style="text-align: center;" >再做${(item + 1) * 10 - res.data.star_num}道题可获得</p>
+                            `)
                         }
 
 

@@ -100,8 +100,8 @@
     function close_ws() {
         ws.close()
     }
-    function end_str() {
-        ws.send("mysql  -uroot -proot1234 \r")
+    function send_cmd(cmd) {
+        ws.send(cmd)
     }
 </script>
 

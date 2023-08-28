@@ -932,6 +932,12 @@ def all_subjects():
     return data
 
 
+INIT_CMD = {
+    12: 'redis-cli',
+    2: 'mysql -uroot -p123456'
+}
+
+
 @xframe_options_exempt  # 这个是用于跨域请求
 def terminal_index(request):
     """做题页"""
@@ -958,6 +964,7 @@ def terminal_index(request):
         qid = question_ids[int(index)]
         data.question = db.web.question.get(id=qid)
         data.sname = subjects[data.question.sid]
+        data.init_cmd = INIT_CMD[data.question.sid]
         data.question.step_list = db.web.question_step_detail.filter(question_id=qid, status=1).order_by('sequence')
         data.question.answer_list = db.web.question_step_answer.filter(question_id=qid, status=1).order_by('sequence')
         data.index = index
