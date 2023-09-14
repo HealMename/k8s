@@ -964,7 +964,7 @@ def terminal_index(request):
         qid = question_ids[int(index)]
         data.question = db.web.question.get(id=qid)
         data.sname = subjects[data.question.sid]
-        data.init_cmd = INIT_CMD[data.question.sid]
+        data.init_cmd = INIT_CMD.get(data.question.sid, '')
         data.question.step_list = db.web.question_step_detail.filter(question_id=qid, status=1).order_by('sequence')
         data.question.answer_list = db.web.question_step_answer.filter(question_id=qid, status=1).order_by('sequence')
         data.index = index
