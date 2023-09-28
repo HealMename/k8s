@@ -172,13 +172,17 @@
     </div>
 </div>
 <div class="subject_level" style="display: none">
-    <p style="font-size: 23px;padding: 20px;padding-bottom:0;">我的战报 <a href="{{ web_url }}/?target=2" target="_blank"
-                                                                       type="button" class="layui-btn"
-                                                                       style="float: right;margin-right: 13px;">去查看更多战报</a>
+    <p style="font-size: 23px;padding: 20px;padding-bottom:0;">我的战报
+        {% if role == 1 %}
+            <a href="{{ web_url }}/?target=2" target="_blank" type="button" class="layui-btn" style="float: right;margin-right: 13px;">去查看更多战报</a>
+        {% else %}
+             <a href="{{ web_url }}/?target=3" target="_blank" type="button" class="layui-btn" style="float: right;margin-right: 13px;">前往注册获取战报</a>
+        {% endif %}
     </p>
     <span style="font-size: 12px;color: #CCC;margin: 24px">分享战报，邀请好友注册，领现金红包</span>
     <div class="sub_main">
-        <div class="sub_img level1"><img src="https://www.ittest008.com/media/img/not_img.png" alt="">
+        {% if role == 1 %}
+            <div class="sub_img level1"><img src="https://www.ittest008.com/media/img/not_img.png" alt="">
             <p style="text-align: center;">在做10道题可获得</p></div>
         <div class="sub_img level2"><img src="https://www.ittest008.com/media/img/not_img.png"
                                          alt="">
@@ -189,6 +193,20 @@
         <div class="sub_img level4"><img src="https://www.ittest008.com/media/img/not_img.png"
                                          alt="">
             <p style="text-align: center;">在做40道题可获得</p></div>
+{% else %}
+            <div class="sub_img level1"><img src="https://www.ittest008.com/media/img/not_start1.png" alt="">
+            <p style="text-align: center;">做10道题可获得</p></div>
+        <div class="sub_img level2"><img src="https://www.ittest008.com/media/img/not_start2.png"
+                                         alt="">
+            <p style="text-align: center;">做20道题可获得</p></div>
+        <div class="sub_img level3"><img src="https://www.ittest008.com/media/img/not_start3.png"
+                                         alt="">
+            <p style="text-align: center;">做30道题可获得</p></div>
+        <div class="sub_img level4"><img src="https://www.ittest008.com/media/img/not_start4.png"
+                                         alt="">
+            <p style="text-align: center;">做40道题可获得</p></div>
+        {% endif %}
+
 
     </div>
 
@@ -203,6 +221,7 @@
     if (token) {
         localStorage.setItem('Token', token);
     }
+    var role = {{ role }}
     var imgs = ['', '', '', '']
     var status = 0;
     var do_time = {{ question.do_time }};
@@ -229,6 +248,7 @@
             });
         }
     });
+    subject_level()
     // 获取可用pod 5分钟未获取到可用操作容器自动关闭
     if (is_view === 0) {
         window.onbeforeunload = beforeUnload;
@@ -348,7 +368,8 @@
             content: $(".subject_level").html(),
             success: function () {
                 var index = layer.load(1);
-                $.each([1, 2, 3, 4], function (item, index) {
+                if (role === 1){
+                    $.each([1, 2, 3, 4], function (item, index) {
                     $.post('{{ web_url }}/tea/user_star/', {
                         sid: {{question.sid}},
                         level: item + 1,
@@ -369,6 +390,8 @@
 
                     })
                 })
+                }
+
                 layer.close(index);
             },
             title: '',

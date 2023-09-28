@@ -956,7 +956,7 @@ def terminal_index(request):
         question_ids = [x['id'] for x in json.loads(test.content)]
         data = Struct()
         subjects = all_subjects()
-
+        data.role = user['role']
         data.test_id = message_id
         data.is_view = is_view
         data.type = test.type
