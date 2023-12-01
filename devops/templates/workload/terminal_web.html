@@ -69,10 +69,10 @@
         // 实时监控输入的字符串发送到后端
         term.on('data', function (data) {
             ws.send(data);
-            parent.set_exit_count()
+            //parent.set_exit_count()
             if (data === '\r') {
                 console.log("输入：", send_data)
-                parent.push_content({"msg": send_data, type: 1});
+                //parent.push_content({"msg": send_data, type: 1});
                 send_data = ''
             }else{
                 send_data += data
@@ -87,7 +87,7 @@
         ws.onmessage = function (event) {
             if (now_send !== event.data && event.data.trim()){
                 console.log('输出：', event.data)
-                parent.push_content({"msg": event.data, type: 2});
+                //parent.push_content({"msg": event.data, type: 2});
             }
           term.write(event.data);
         };
